@@ -1,12 +1,25 @@
 import React from "react";
 
 export const App = (props) => {
-  /////////
+  ///////////
   // STATE
-  /////////
+  ///////////
 
   // Create state to hold API data
   const [todos, setTodos] = React.useState([]);
+
+  // Create a blank form as the initialize form state and state to reset to once the form is submitted
+  const blankForm = {
+    title: "",
+    body: "",
+  };
+
+  // Create state for the form and set it to the blank form
+  const [form, setForm] = React.useState(blankForm);
+
+  //
+  //
+  //
 
   //////////////
   // FUNCTIONS
@@ -25,12 +38,7 @@ export const App = (props) => {
     setTodos(data);
   };
 
-  /////////////////////////////
-  // RENDERING THE JSX DATA
-  ////////////////////////////
-
-  // I get an error when I try to render JSX because the React.useEffect only renders the page on the initial load, before the data is returned from the API (hence the async await)
-  // To fix this, I need conditionally render the data with a ternary operator
+  // Function to Render JSX Data
   const TodosLoaded = () => (
     <div>
       {todos.map((todo) => (
@@ -45,6 +53,34 @@ export const App = (props) => {
   // Variable with JSX to display if there aren't any todos
   const noTodos = <h1>Nothing To Do Today, Enjoy Your Free Time</h1>;
 
+  // Update state when the user types in the form
+  const handleFormChange = (event) => {
+    // Update the form state with the newly typed value based on the form fields (event.target.name)
+    setForm({ ...form, [event.target.name]: event.target.value });
+  };
+
+  // Handle Submit
+  const handleSubmit = async (event) => {
+    // Prevents the form from refreshing the screen
+    event.preventDefault();
+    // Make a post request to the backend server to create a new To Do
+    const response = await fetch("http://localhost:3000/todos", {
+      meth: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+    // Update the list of todos by refetching the list
+    await getTodos();
+    // Reset the form
+    setForm(blankForm);
+  };
+
+  //
+  //
+  //
+
   ///////////////
   // USE EFFECT
   //////////////
@@ -53,6 +89,10 @@ export const App = (props) => {
   React.useEffect(() => {
     getTodos();
   }, []);
+
+  //
+  //
+  //
 
   ////////////////
   //RETURN JSX
