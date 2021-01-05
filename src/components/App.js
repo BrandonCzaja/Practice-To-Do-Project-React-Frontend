@@ -32,5 +32,34 @@ export const App = (props) => {
     getTodos();
   }, []);
 
-  return <h1>Hello World</h1>;
+  /////////////////////////////
+  // RENDERING THE JSX DATA
+  ////////////////////////////
+
+  // I get an error when I try to render JSX because the React.useEffect only renders the page on the initial load, before the data is returned from the API (hence the async await)
+  // To fix this, I need conditionally render the data with a ternary operator
+  const TodosLoaded = () => {
+    <h2>
+      {todos.map((todo) => (
+        <div>
+          <h2>{todo.title}</h2>
+          <h3>{todo.body}</h3>
+        </div>
+      ))}
+    </h2>;
+  };
+
+  // Variable with JSX to display if there aren't any todos
+  const noTodos = <h1>Nothing To Do Today, Enjoy Your Free Time</h1>;
+
+  ////////////////
+  //RETURN JSX
+  ///////////////
+  // In the ternary operator below the app renders the todos if there are any (todos.length > 0) and if there aren't, it renders the noTodos variable
+  return (
+    <div>
+      <h1>The React To-Do App</h1>
+      {todos.length > 0 ? TodosLoaded() : noTodos}
+    </div>
+  );
 };
