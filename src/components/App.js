@@ -16,12 +16,34 @@ export const App = (props) => {
   const getTodos = async () => {
     // Make a request to the backend server
     const response = await fetch("http://localhost:3000/todos");
-    //const response = await fetch("https://brandon-czaja-to-do-backend.herokuapp.com/");
+    // const response = await fetch(
+    //   "https://brandon-czaja-to-do-backend.herokuapp.com/"
+    // );
     // Convert the response data to JSON
     const data = await response.json();
     // Assign the response data to the setTodos
     setTodos(data);
   };
+
+  /////////////////////////////
+  // RENDERING THE JSX DATA
+  ////////////////////////////
+
+  // I get an error when I try to render JSX because the React.useEffect only renders the page on the initial load, before the data is returned from the API (hence the async await)
+  // To fix this, I need conditionally render the data with a ternary operator
+  const TodosLoaded = () => (
+    <div>
+      {todos.map((todo) => (
+        <div>
+          <h2>{todo.title}</h2>
+          <h3>{todo.body}</h3>
+        </div>
+      ))}
+    </div>
+  );
+
+  // Variable with JSX to display if there aren't any todos
+  const noTodos = <h1>Nothing To Do Today, Enjoy Your Free Time</h1>;
 
   ///////////////
   // USE EFFECT
@@ -32,29 +54,10 @@ export const App = (props) => {
     getTodos();
   }, []);
 
-  /////////////////////////////
-  // RENDERING THE JSX DATA
-  ////////////////////////////
-
-  // I get an error when I try to render JSX because the React.useEffect only renders the page on the initial load, before the data is returned from the API (hence the async await)
-  // To fix this, I need conditionally render the data with a ternary operator
-  const TodosLoaded = () => {
-    <h2>
-      {todos.map((todo) => (
-        <div>
-          <h2>{todo.title}</h2>
-          <h3>{todo.body}</h3>
-        </div>
-      ))}
-    </h2>;
-  };
-
-  // Variable with JSX to display if there aren't any todos
-  const noTodos = <h1>Nothing To Do Today, Enjoy Your Free Time</h1>;
-
   ////////////////
   //RETURN JSX
   ///////////////
+
   // In the ternary operator below the app renders the todos if there are any (todos.length > 0) and if there aren't, it renders the noTodos variable
   return (
     <div>
