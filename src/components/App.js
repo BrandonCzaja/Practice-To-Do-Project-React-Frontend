@@ -15,9 +15,8 @@ export const App = (props) => {
   // Create a function to grab the latest list of todos
   const getTodos = async () => {
     // Make a request to the backend server
-    const response = await fetch(
-      "https://brandon-czaja-to-do-backend.herokuapp.com/"
-    );
+    const response = await fetch("http://localhost:3000/todos");
+    //const response = await fetch("https://brandon-czaja-to-do-backend.herokuapp.com/");
     // Convert the response data to JSON
     const data = await response.json();
     // Assign the response data to the setTodos
