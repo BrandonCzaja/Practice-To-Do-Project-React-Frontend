@@ -24,5 +24,14 @@ export const App = (props) => {
     setTodos(data);
   };
 
+  ///////////////
+  // USE EFFECT
+  //////////////
+
+  // useEffect will immediately render the list of to dos when the page first loads. If I want the list to rerender again I put those events in the []
+  React.useEffect(() => {
+    getTodos();
+  }, []);
+
   return <h1>Hello World</h1>;
 };
