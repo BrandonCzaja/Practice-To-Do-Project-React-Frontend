@@ -49,6 +49,7 @@ export const App = (props) => {
           <h2>{todo.title}</h2>
           <h3>{todo.body}</h3>
           <button onClick={() => setUpdate(todo)}>Edit</button>
+          <button onClick={() => handleDelete(todo)}>Delete</button>
         </div>
       ))}
     </>
@@ -104,6 +105,17 @@ export const App = (props) => {
     await getTodos();
     // Reset the form
     setUpdate(blankForm);
+  };
+
+  // Delete To Dos
+  const handleDelete = async (todo) => {
+    event.preventDefault();
+    // Make delete request to server
+    const response = await fetch("http://localhost:3000/todos/" + todo.id, {
+      method: "delete",
+    });
+    // Update the list of to dos
+    await getTodos();
   };
 
   //
