@@ -15,10 +15,10 @@ export const App = (props) => {
   const [todos, setTodos] = React.useState([]);
 
   // Create state for the form and set it to the blank form
-  const [create, setCreate] = React.useState(blankForm);
+  const [createForm, setCreateForm] = React.useState(blankForm);
 
   // Create state to update todos
-  const [update, setUpdate] = React.useState(blankForm);
+  const [updateForm, setUpdate] = React.useState(blankForm);
 
   //
   //
@@ -43,27 +43,28 @@ export const App = (props) => {
 
   // Function to Render JSX Data
   const TodosLoaded = () => (
-    <div>
+    <>
       {todos.map((todo) => (
         <div>
           <h2>{todo.title}</h2>
           <h3>{todo.body}</h3>
+          <button onClick={() => setUpdate(todo)}>Edit</button>
         </div>
       ))}
-    </div>
+    </>
   );
 
   // Variable with JSX to display if there aren't any todos
   const noTodos = <h1>Nothing To Do Today, Enjoy Your Free Time</h1>;
 
   // Update state when the user types in the form
-  const handleFormChange = (event) => {
+  const handleCreateFormChange = (event) => {
     // Update the form state with the newly typed value based on the form fields (event.target.name)
-    setCreate({ ...create, [event.target.name]: event.target.value });
+    setCreateForm({ ...createForm, [event.target.name]: event.target.value });
   };
 
-  // Handle Submit
-  const handleSubmit = async (event) => {
+  // Handle Create Submit
+  const handleCreateSubmit = async (event) => {
     // Prevents the form from refreshing the screen
     event.preventDefault();
     // Make a post request to the backend server to create a new To Do
@@ -72,12 +73,37 @@ export const App = (props) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(create),
+      body: JSON.stringify(createForm),
     });
     // Update the list of todos by refetching the list
     await getTodos();
     // Reset the form
-    setCreate(blankForm);
+    setCreateForm(blankForm);
+  };
+
+  // Handle Updating To Do State
+  const handleUpdateChange = (event) => {
+    setUpdate({ ...updateForm, [event.target.name]: event.target.value });
+  };
+
+  // Handle Update Submit
+  const handleUpdateSubmit = async (event) => {
+    event.preventDefault();
+    // Make Put request to backend server
+    const response = await fetch(
+      "http://localhost:3000/todos/" + updateForm.id,
+      {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateForm),
+      }
+    );
+    // Update the list of todos
+    await getTodos();
+    // Reset the form
+    setUpdate(blankForm);
   };
 
   //
@@ -106,22 +132,38 @@ export const App = (props) => {
     <div>
       <h1>The React To Do App</h1>
       <h2>Create a To Do</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleCreateSubmit}>
         <input
           placeholder="Name"
           type="text"
           name="title"
-          value={create.title}
-          onChange={handleFormChange}
+          value={createForm.title}
+          onChange={handleCreateFormChange}
         />
         <input
           placeholder="Task"
           type="text"
           name="body"
-          value={create.body}
-          onChange={handleFormChange}
+          value={createForm.body}
+          onChange={handleCreateFormChange}
         />
         <input type="submit" value="Add a To Do" />
+      </form>
+      <h1>Update a To Do</h1>
+      <form onSubmit={handleUpdateSubmit}>
+        <input
+          type="text"
+          name="title"
+          value={updateForm.title}
+          onChange={handleUpdateChange}
+        />
+        <input
+          type="text"
+          name="body"
+          value={updateForm.body}
+          onChange={handleUpdateChange}
+        />
+        <input type="submit" value="Update To Do" />
       </form>
       <h1>Things To Do</h1>
       {todos.length > 0 ? TodosLoaded() : noTodos}
