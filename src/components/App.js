@@ -15,7 +15,10 @@ export const App = (props) => {
   const [todos, setTodos] = React.useState([]);
 
   // Create state for the form and set it to the blank form
-  const [form, setForm] = React.useState(blankForm);
+  const [create, setCreate] = React.useState(blankForm);
+
+  // Create state to update todos
+  const [update, setUpdate] = React.useState(blankForm);
 
   //
   //
@@ -56,7 +59,7 @@ export const App = (props) => {
   // Update state when the user types in the form
   const handleFormChange = (event) => {
     // Update the form state with the newly typed value based on the form fields (event.target.name)
-    setForm({ ...form, [event.target.name]: event.target.value });
+    setCreate({ ...create, [event.target.name]: event.target.value });
   };
 
   // Handle Submit
@@ -69,12 +72,12 @@ export const App = (props) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(form),
+      body: JSON.stringify(create),
     });
     // Update the list of todos by refetching the list
     await getTodos();
     // Reset the form
-    setForm(blankForm);
+    setCreate(blankForm);
   };
 
   //
@@ -108,14 +111,14 @@ export const App = (props) => {
           placeholder="Name"
           type="text"
           name="title"
-          value={form.title}
+          value={create.title}
           onChange={handleFormChange}
         />
         <input
           placeholder="Task"
           type="text"
           name="body"
-          value={form.body}
+          value={create.body}
           onChange={handleFormChange}
         />
         <input type="submit" value="Add a To Do" />
