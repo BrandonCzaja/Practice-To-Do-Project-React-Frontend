@@ -5,14 +5,14 @@ export const App = (props) => {
   // STATE
   ///////////
 
-  // Create state to hold API data
-  const [todos, setTodos] = React.useState([]);
-
   // Create a blank form as the initialize form state and state to reset to once the form is submitted
   const blankForm = {
     title: "",
     body: "",
   };
+
+  // Create state to hold API data
+  const [todos, setTodos] = React.useState([]);
 
   // Create state for the form and set it to the blank form
   const [form, setForm] = React.useState(blankForm);
@@ -65,7 +65,7 @@ export const App = (props) => {
     event.preventDefault();
     // Make a post request to the backend server to create a new To Do
     const response = await fetch("http://localhost:3000/todos", {
-      meth: "post",
+      method: "post",
       headers: {
         "Content-Type": "application/json",
       },
@@ -101,7 +101,26 @@ export const App = (props) => {
   // In the ternary operator below the app renders the todos if there are any (todos.length > 0) and if there aren't, it renders the noTodos variable
   return (
     <div>
-      <h1>The React To-Do App</h1>
+      <h1>The React To Do App</h1>
+      <h2>Create a To Do</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          placeholder="Name"
+          type="text"
+          name="title"
+          value={form.title}
+          onChange={handleFormChange}
+        />
+        <input
+          placeholder="Task"
+          type="text"
+          name="body"
+          value={form.body}
+          onChange={handleFormChange}
+        />
+        <input type="submit" value="Add a To Do" />
+      </form>
+      <h1>Things To Do</h1>
       {todos.length > 0 ? TodosLoaded() : noTodos}
     </div>
   );
